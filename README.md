@@ -7,4 +7,4 @@
 
 
 ## Project Status
-Project is: _under development_.
+Project is: _under development_ (documentation also!).
