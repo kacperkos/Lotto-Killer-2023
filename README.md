@@ -1,6 +1,7 @@
 # Crypto-Index
 > Try to increase your chances of winning in combination games of chance.
-
+>
+> **Warning**: All comments and explanations in code are only in Polish at this moment!
 
 ## Table of Contents
 * [Project Status](#project-status)
