@@ -29,7 +29,7 @@ echo '<br />';
 //Tworzenie obiektu reguły
 $rule = new SumOfPastElements();
 //Sposób działania reguły można najpierw zwizualizować!
-//$rule->visualize();
+$rule->visualize();
 //$all_combinations->removeCombinationsByRule($rule);
 //Wywołanie poprzez echo spowoduje wyświetlenie komunikatu zwrotnego
 echo $all_combinations->removeCombinationsByRule($rule);
