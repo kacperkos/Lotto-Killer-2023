@@ -88,14 +88,12 @@ class AllCombinations
     {
         return count($this->numbers);
     }
+    public function getNumbers()
+    {
+        return $this->numbers;
+    }
     public function getCurrentChances()
     {
-        if ($this->initial_chances == 0) {
-            $this->initial_chances = count($this->all_combinations);
-            return 'Bieżące szanse na wygraną: 1 do ' . $this->initial_chances;
-        } else {
-            $current_chances = count($this->all_combinations);
-            return 'Bieżące szanse na wygraną: 1 do ' . $current_chances . ' (+' . round(((($this->initial_chances - $current_chances) * 100) / $this->initial_chances), 2) . '%)';
-        }
+        return 'Bieżące szanse na wygraną: 1 do ' . count($this->all_combinations);
     }    
 }

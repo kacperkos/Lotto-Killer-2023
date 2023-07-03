@@ -5,6 +5,7 @@ require 'vendor/autoload.php';
 use Lottokiller\Game\AllCombinations;
 //use Lottokiller\Game\PastLotteries;
 use Lottokiller\Rules\SumOfPastElements;
+use Lottokiller\Rules\OmitPastLotteries;
 
 ?>
 <html>
@@ -43,6 +44,7 @@ echo '<p>';
 echo $all_combinations->getCurrentChances();
 echo '</p>';
 
+//REGUŁA #1 (+objaśnienia)
 //Sposób usuwania z obiektu AllCombinations kombinacji według przyjętej reguły
 //Tworzenie obiektu reguły
 $rule = new SumOfPastElements();
@@ -50,6 +52,17 @@ $rule = new SumOfPastElements();
 $rule->visualize();
 //$all_combinations->removeCombinationsByRule($rule);
 //Wywołanie poprzez echo spowoduje wyświetlenie komunikatu zwrotnego
+echo '<p>';
+echo $all_combinations->removeCombinationsByRule($rule);
+unset($rule);
+echo '</p>';
+echo '<p>';
+echo $all_combinations->getCurrentChances();
+echo '</p>';
+
+//REGUŁA #2
+$rule = new OmitPastLotteries();
+$rule->visualize();
 echo '<p>';
 echo $all_combinations->removeCombinationsByRule($rule);
 unset($rule);

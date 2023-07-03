@@ -67,4 +67,15 @@ class PastLotteries
     {
         $this->past_lotteries[$row_index][$column_name] = $column_value;
     }
+    public function removeLotteryByIndex($index)
+    {
+        unset($this->past_lotteries[$index]);
+    }
+    public function removeColumnGlobally(string $column_name) {
+        foreach ($this->past_lotteries as $index => $lottery) {
+            if (isset($lottery[$column_name])) {
+                unset($this->past_lotteries[$index][$column_name]);
+            }
+        }
+    }
 }
