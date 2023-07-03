@@ -8,6 +8,7 @@ class AllCombinations
     private $all_combinations = [];
     private $numbers = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42];
     private $k = 5;
+    private $initial_chances = 0;
     
     public static function getInstance(...$args)
     {
@@ -79,8 +80,22 @@ class AllCombinations
         $result_msg = $rule->apply($this);
         return $result_msg;
     }
+    public function getK()
+    {
+        return $this->k;
+    }
+    public function getNumberOfElements()
+    {
+        return count($this->numbers);
+    }
     public function getCurrentChances()
     {
-        return 'Szanse na wygraną: 1 do ' . count($this->all_combinations);
+        if ($this->initial_chances == 0) {
+            $this->initial_chances = count($this->all_combinations);
+            return 'Bieżące szanse na wygraną: 1 do ' . $this->initial_chances;
+        } else {
+            $current_chances = count($this->all_combinations);
+            return 'Bieżące szanse na wygraną: 1 do ' . $current_chances . ' (+' . round(((($this->initial_chances - $current_chances) * 100) / $this->initial_chances), 2) . '%)';
+        }
     }    
 }

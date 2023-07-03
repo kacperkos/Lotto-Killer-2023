@@ -14,7 +14,7 @@ class PastLotteries
         if ($file_string !== false) {
             $file_string_exploded = explode("\n", $file_string);
             $past_lotteries_index = 0;
-            foreach($file_string_exploded as $index => $row) {
+            foreach ($file_string_exploded as $index => $row) {
                 if(!empty($row)) {
                     $row_exploded = explode(",", $row);
                     $numbers_exploded = explode(" ", $row_exploded[2]);

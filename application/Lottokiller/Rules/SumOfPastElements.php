@@ -26,7 +26,7 @@ class SumOfPastElements implements RuleInterface
     private $name = 'Suma liczb z poprzednich losowań';
     private $description = 'Ta reguła wyklucza z wszystkich możliwych kombinacji te z nich, których suma wylosowanych liczb jest poza uznanymi przedziałami sum';
     private $past_lotteries;
-    private static $past_lotteries_sum_ranges;
+    private $past_lotteries_sum_ranges;
     //CONFIG: Co ile ma być tworzony nowy przedział w tablicy analitycznej?
     private int $step = 5;
     //CONFIG: Jaki jest próg ważności przedziału w tablicy analitycznej?
@@ -46,8 +46,8 @@ class SumOfPastElements implements RuleInterface
             $this->sumAndAnalyzeElements();
         }
         if (
-            !empty(self::$past_lotteries_sum_ranges)
-            && is_array(self::$past_lotteries_sum_ranges)
+            !empty($this->past_lotteries_sum_ranges)
+            && is_array($this->past_lotteries_sum_ranges)
         ) {
             $result = $this->remove($all_combinations);
         }
@@ -60,16 +60,16 @@ class SumOfPastElements implements RuleInterface
     }
     public function visualize()
     {
-        if (empty(self::$past_lotteries_sum_ranges)) {
+        if (empty($this->past_lotteries_sum_ranges)) {
             $this->sumAndAnalyzeElements();
         }
         if (
-            !empty(self::$past_lotteries_sum_ranges)
-            && is_array(self::$past_lotteries_sum_ranges)
+            !empty($this->past_lotteries_sum_ranges)
+            && is_array($this->past_lotteries_sum_ranges)
         ) {
             $this->drawGraph();
         } else {
-            echo 'Wizualizacja reguły "' . $this->getName() . '" nie jest możliwa.';
+            echo '<div class="visualizeBox"><p class="visualize">Wizualizacja reguły "' . $this->getName() . '" nie jest możliwa.</p></div>';
         }
     }
     public function getName()
@@ -83,8 +83,7 @@ class SumOfPastElements implements RuleInterface
     private function sumAndAnalyzeElements()
     {
         //Suma liczb z każdego losowania w nowej kolumnie 'lottery_sum'
-        foreach ($this->past_lotteries->getAllLotteries() as $index => $lottery)
-        {
+        foreach ($this->past_lotteries->getAllLotteries() as $index => $lottery) {
             $lottery_sum = 0;
             for ($i = 0; $i < $this->past_lotteries->getNumberOfElementsInLottery(); $i++)
             {
@@ -94,8 +93,7 @@ class SumOfPastElements implements RuleInterface
         }
         //Szukanie największej sumy
         $biggest_sum = 0;
-        foreach($this->past_lotteries->getAllLotteries() as $row)
-        {
+        foreach ($this->past_lotteries->getAllLotteries() as $row) {
             if ($row['lottery_sum'] > $biggest_sum) {
                 $biggest_sum = $row['lottery_sum'];
             }
@@ -109,8 +107,7 @@ class SumOfPastElements implements RuleInterface
         $analyze_array[$analyze_array_index]['max'] = $max_value;
         $analyze_array[$analyze_array_index]['counter'] = 0;
         $analyze_array_index++;
-        while ($max_value <= $biggest_sum)
-        {
+        while ($max_value <= $biggest_sum) {
             $min_value += $this->step;
             $max_value += $this->step;
             $analyze_array[$analyze_array_index]['min'] = $min_value;
@@ -119,10 +116,8 @@ class SumOfPastElements implements RuleInterface
             $analyze_array_index++;
         }
         //Wypełnianie tablicy analitycznej zliczeniami sum z danego przedziału
-        foreach ($this->past_lotteries->getAllLotteries() as $row)
-        {
-            foreach ($analyze_array as &$analyze_row)
-            {
+        foreach ($this->past_lotteries->getAllLotteries() as $row) {
+            foreach ($analyze_array as &$analyze_row) {
                 if (
                     $row['lottery_sum'] >= $analyze_row['min']
                     && $row['lottery_sum'] <= $analyze_row['max']
@@ -133,15 +128,14 @@ class SumOfPastElements implements RuleInterface
         }
         //Określanie, które przedziały sum należy wykluczyć z AllCombinations
         $past_lotteries_counter = count($this->past_lotteries->getAllLotteries());
-        foreach ($analyze_array as &$analyze_row)
-        {
+        foreach ($analyze_array as &$analyze_row) {
             $analyze_row['confirm'] = false;
             $percentage = $this->percentage($analyze_row['counter'], $past_lotteries_counter);
             if ($percentage >= $this->importance) {
                 $analyze_row['confirm'] = true;
             }
         }
-        self::$past_lotteries_sum_ranges = $analyze_array;
+        $this->past_lotteries_sum_ranges = $analyze_array;
     }
     private function percentage($to_percentage, $range): float
     {
@@ -152,13 +146,13 @@ class SumOfPastElements implements RuleInterface
         $red_values = 0;
         $grey_values = 0;
         $past_lotteries_counter = count($this->past_lotteries->getAllLotteries());
-        echo '<p style="font-family: Consolas;">WIZUALIZACJA REGUŁY:<br/>&nbsp;&nbsp;&nbsp;<b>"' . $this->getName() . '"</b></p>';
-        echo '<p style="font-family: Consolas; font-size: 13px"><b>OPIS REGUŁY:</b><br/ >&nbsp;&nbsp;&nbsp;&nbsp;' . $this->getDescription() . '</p>';
-        echo '<p style="font-family: Consolas; font-size: 13px"><b>KONIGURACJA:</b><br />&nbsp;&nbsp;&nbsp;&nbsp;POZIOM WAŻNOŚCI PRZEDZIAŁU: <span style="color: red;">' . $this->importance . '%</span><br /></p>';
-        echo '<p style="font-family: Consolas; font-size: 13px"><b>LEGENDA: </b><br/ >&nbsp;&nbsp;&nbsp;&nbsp;[minimalna wartość przedziału - maksymalna wartość przedziału] | &bull;&bull;&bull; procentowy udział przedziału we wszystkich dotychczasowych losowaniach<br /><br /></p>';
-        foreach (self::$past_lotteries_sum_ranges as $draw_row)
-        {
-            echo '<p style="font-family: Consolas; line-height: 7px; font-size: 13px">';
+        echo '<div class="visualizeBox">';
+        echo '<p class="visualize">WIZUALIZACJA REGUŁY:<br/>&nbsp;&nbsp;&nbsp;&nbsp;<u>"' . $this->getName() . '"</u></p>';
+        echo '<p class="visualize">OPIS REGUŁY:<br/ >&nbsp;&nbsp;&nbsp;&nbsp;' . $this->getDescription() . '</p>';
+        echo '<p class="visualize">KONIGURACJA:<br />&nbsp;&nbsp;&nbsp;&nbsp;POZIOM WAŻNOŚCI PRZEDZIAŁU: <span style="color: red;">' . $this->importance . '%</span><br /></p>';
+        echo '<p class="visualize">LEGENDA: <br/ >&nbsp;&nbsp;&nbsp;&nbsp;[minimalna wartość przedziału - maksymalna wartość przedziału] | &bull;&bull;&bull; procentowy udział przedziału we wszystkich dotychczasowych losowaniach<br /><br /></p>';
+        foreach ($this->past_lotteries_sum_ranges as $draw_row) {
+            echo '<p class="visualize" style="line-height: 7px; font-size: 13px">';
             echo $this->drawRange($draw_row['min'], $draw_row['max'], 10);
             echo '|&nbsp;';
             if ($draw_row['confirm'] === true) {
@@ -168,12 +162,13 @@ class SumOfPastElements implements RuleInterface
                 echo '<span style="color: grey">';
                 $grey_values += $this->percentage($draw_row['counter'], $past_lotteries_counter);
             }
-            for($i=0; $i<$draw_row['counter']/10; $i++) {
+            for ($i=0; $i < $draw_row['counter']/10; $i++) {
                 echo '&bull;';
             }
             echo '&nbsp;'.round($this->percentage($draw_row['counter'], $past_lotteries_counter), 2).'%</span></p>';
         }
-        echo '<p style="font-family: Consolas; font-size: 13px"><br /><span style="color: red">UZNANE PRZEDZIAŁY SUM: ' . round($red_values, 2).'%</span><br /><span style="color: grey">POMINIĘTE PRZEDZIAŁY SUM: ' . round($grey_values, 2).'%</span></b></p>';
+        echo '<p class="visualize" style="font-size: 13px"><br /><span style="color: red">UZNANE PRZEDZIAŁY SUM: ' . round($red_values, 2).'%</span><br /><span style="color: grey">POMINIĘTE PRZEDZIAŁY SUM: ' . round($grey_values, 2).'%</span></b></p>';
+        echo '</div>';
     }
     private function drawRange(int $min, int $max, int $tab): string
     {
@@ -190,10 +185,8 @@ class SumOfPastElements implements RuleInterface
     private function remove($all_combinations)
     {
         $removed_counter = 0;
-        foreach ($all_combinations->getAllCombinations() as $index => $combination)
-        {
-            foreach (self::$past_lotteries_sum_ranges as $range)
-            {
+        foreach ($all_combinations->getAllCombinations() as $index => $combination) {
+            foreach ($this->past_lotteries_sum_ranges as $range) {
                 $combination_sum = array_sum($combination);
                 if (
                     $combination_sum >= $range['min']

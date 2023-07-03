@@ -1,0 +1,20 @@
+body {
+    margin: 0;
+    background-color: #cccccc;
+}
+
+div.visualizeBox {
+    width: 100%;
+    margin: 0;
+    border: 0;
+    background-color: #333333;
+}
+
+p {
+    font-family: Consolas;
+    color: #333333;
+}
+
+p.visualize {
+    color: #ffffff;
+}

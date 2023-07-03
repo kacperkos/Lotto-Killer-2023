@@ -6,6 +6,16 @@ use Lottokiller\Game\AllCombinations;
 //use Lottokiller\Game\PastLotteries;
 use Lottokiller\Rules\SumOfPastElements;
 
+?>
+<html>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <link rel="stylesheet" type="text/css" href="css/style.css" />
+        <title>LottoKiller</title>
+    </head>
+    <body>
+<?php
+
 //Sposoby inicjowania zbioru wszystkich możliwych kombinacji
 //Obiekt AllCombinations to Singleton!
 $all_combinations = AllCombinations::getInstance();
@@ -21,9 +31,17 @@ $all_combinations = AllCombinations::getInstance();
 //$all_combinations->removeCombination($past_lotteries->getLotteryById(13));
 //echo $all_combinations->getCurrentChances();
 
+//Wyświetlanie aktualnego stanu obiektu AllCombinations
+//$all_combinations->dump();
+
+//Header
+echo '<p>LottoKiller | version: pre-alpha</p>';
+echo '<p>GRA: ' . $all_combinations->getK() . ' z ' . $all_combinations->getNumberOfElements() . ' liczb</p>';
+
 //Wyświetlanie aktualnego prawdopodobieństwa na wygraną
+echo '<p>';
 echo $all_combinations->getCurrentChances();
-echo '<br />';
+echo '</p>';
 
 //Sposób usuwania z obiektu AllCombinations kombinacji według przyjętej reguły
 //Tworzenie obiektu reguły
@@ -32,11 +50,14 @@ $rule = new SumOfPastElements();
 $rule->visualize();
 //$all_combinations->removeCombinationsByRule($rule);
 //Wywołanie poprzez echo spowoduje wyświetlenie komunikatu zwrotnego
+echo '<p>';
 echo $all_combinations->removeCombinationsByRule($rule);
-echo '<br />';
 unset($rule);
-//Wyświetlanie aktualnego stanu obiektu AllCombinations
-//$all_combinations->dump();
-
+echo '</p>';
+echo '<p>';
 echo $all_combinations->getCurrentChances();
-echo '<br />';
+echo '</p>';
+
+?>
+    </body>
+</html>
