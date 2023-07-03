@@ -11,7 +11,7 @@ use Lottokiller\Rules\SumOfPastElements;
     <head>
         <meta http-equiv="content-type" content="text/html; charset=utf-8" />
         <link rel="stylesheet" type="text/css" href="css/style.css" />
-        <title>LottoKiller</title>
+        <title>Lotto-Killer</title>
     </head>
     <body>
 <?php
@@ -35,7 +35,7 @@ $all_combinations = AllCombinations::getInstance();
 //$all_combinations->dump();
 
 //Header
-echo '<p>LottoKiller | version: pre-alpha</p>';
+echo '<p>Lotto-Killer | version: pre-alpha</p>';
 echo '<p>GRA: ' . $all_combinations->getK() . ' z ' . $all_combinations->getNumberOfElements() . ' liczb</p>';
 
 //Wyświetlanie aktualnego prawdopodobieństwa na wygraną
