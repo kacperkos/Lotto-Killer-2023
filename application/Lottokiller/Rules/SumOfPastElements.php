@@ -80,12 +80,15 @@ class SumOfPastElements implements RuleInterface
     {
         return $this->description;
     }
+    //
+    // METODY NADMIAROWE WZGLĘDEM INTERFEJSU
+    //
     private function sumAndAnalyzeElements()
     {
         //Suma liczb z każdego losowania w nowej kolumnie 'lottery_sum'
         foreach ($this->past_lotteries->getAllLotteries() as $index => $lottery) {
             $lottery_sum = 0;
-            for ($i = 0; $i < $this->past_lotteries->getNumberOfElementsInLottery(); $i++)
+            for ($i = 0; $i < $this->past_lotteries->getK(); $i++)
             {
                 $lottery_sum += $lottery[$i];
             }
@@ -130,16 +133,12 @@ class SumOfPastElements implements RuleInterface
         $past_lotteries_counter = count($this->past_lotteries->getAllLotteries());
         foreach ($analyze_array as &$analyze_row) {
             $analyze_row['confirm'] = false;
-            $percentage = $this->percentage($analyze_row['counter'], $past_lotteries_counter);
+            $percentage = percentage($analyze_row['counter'], $past_lotteries_counter);
             if ($percentage >= $this->importance) {
                 $analyze_row['confirm'] = true;
             }
         }
         $this->past_lotteries_sum_ranges = $analyze_array;
-    }
-    private function percentage($to_percentage, $range): float
-    {
-        return ($to_percentage * 100) / $range;
     }
     private function drawGraph()
     {
@@ -157,15 +156,15 @@ class SumOfPastElements implements RuleInterface
             echo '|&nbsp;';
             if ($draw_row['confirm'] === true) {
                 echo '<span style="color: red">';
-                $red_values += $this->percentage($draw_row['counter'], $past_lotteries_counter);
+                $red_values += percentage($draw_row['counter'], $past_lotteries_counter);
             } else {
                 echo '<span style="color: grey">';
-                $grey_values += $this->percentage($draw_row['counter'], $past_lotteries_counter);
+                $grey_values += percentage($draw_row['counter'], $past_lotteries_counter);
             }
             for ($i=0; $i < $draw_row['counter']/10; $i++) {
                 echo '&bull;';
             }
-            echo '&nbsp;'.round($this->percentage($draw_row['counter'], $past_lotteries_counter), 2).'%</span></p>';
+            echo '&nbsp;'.round(percentage($draw_row['counter'], $past_lotteries_counter), 2).'%</span></p>';
         }
         echo '<p class="visualize" style="font-size: 13px"><br /><span style="color: red">UZNANE PRZEDZIAŁY SUM: ' . round($red_values, 2).'%</span><br /><span style="color: grey">POMINIĘTE PRZEDZIAŁY SUM: ' . round($grey_values, 2).'%</span></b></p>';
         echo '</div>';
@@ -193,7 +192,7 @@ class SumOfPastElements implements RuleInterface
                     && $combination_sum <= $range['max']
                     && $range['confirm'] === false
                 ) {
-                    $all_combinations->removeCombinationById($index);
+                    $all_combinations->removeCombinationByIndex($index);
                     $removed_counter++;
                     break;
                 }

@@ -6,7 +6,7 @@ use Lottokiller\Game\AllCombinations;
 use Lottokiller\Game\PastLotteries;
 use Lottokiller\Interfaces\RuleInterface;
 
-//NAZWA REGUŁY: "Omijaj kombinacje z przeszłości"
+//NAZWA REGUŁY: "Pomiń kombinacje z przeszłości"
 //
 //OPIS REGUŁY:
 //
@@ -14,10 +14,11 @@ use Lottokiller\Interfaces\RuleInterface;
 //wylosowane w przeszłości.
 class OmitPastLotteries implements RuleInterface
 {
-    private $name = 'Omijaj kombinacje z przeszłości';
+    private $name = 'Pomiń kombinacje z przeszłości';
     private $description = 'Ta reguła wyklucza z wszystkich możliwych kombinacji te z nich, które były już wylosowane w przeszłości';
     private $past_lotteries;
     private $past_lotteries_omit_counter = 0;
+    private $past_lotteries_duplicate_counter = 0;
     
     public function __construct()
     { 
@@ -61,6 +62,9 @@ class OmitPastLotteries implements RuleInterface
     {
         return $this->description;
     }
+    //
+    // METODY NADMIAROWE WZGLĘDEM INTERFEJSU
+    //
     private function analyzePastLotteries()
     {
         //Usuwanie z obiektu PastLotteries tych losowań, które nie pasują
@@ -68,10 +72,25 @@ class OmitPastLotteries implements RuleInterface
         $all_combinations = AllCombinations::getInstance();
         $current_game_numbers = $all_combinations->getNumbers();
         foreach ($this->past_lotteries->getAllLotteries() as $index => $lottery) {
-            for ($i=0; $i < $this->past_lotteries->getNumberOfElementsInLottery(); $i++) {
+            for ($i = 0; $i < $this->past_lotteries->getK(); $i++) {
                 if (!in_array($lottery[$i], $current_game_numbers)) {
                     $this->past_lotteries->removeLotteryByIndex($index);
                     break;
+                }
+            }
+        }
+        //$this->past_lotteries_omit_counter = count($this->past_lotteries->getAllLotteries());
+        //Usuwanie z obiektu PastLotteries duplikatów losowań
+        $this->past_lotteries->removeColumnGlobally('lottery_id');
+        $this->past_lotteries->removeColumnGlobally('lottery_date');
+        foreach ($this->past_lotteries->getAllLotteries() as $base_index => $base_lottery) {
+            foreach ($this->past_lotteries->getAllLotteries() as $index => $lottery) {
+                if (
+                    $base_lottery == $lottery
+                    && $base_index < $index
+                ) {
+                    $this->past_lotteries->removeLotteryByIndex($index);
+                    $this->past_lotteries_duplicate_counter++;
                 }
             }
         }
@@ -82,18 +101,17 @@ class OmitPastLotteries implements RuleInterface
         echo '<div class="visualizeBox">';
         echo '<p class="visualize">WIZUALIZACJA REGUŁY:<br/>&nbsp;&nbsp;&nbsp;&nbsp;<u>"' . $this->getName() . '"</u></p>';
         echo '<p class="visualize">OPIS REGUŁY:<br/ >&nbsp;&nbsp;&nbsp;&nbsp;' . $this->getDescription() . '</p>';
+        echo '<p class="visualize" style="font-size: 13px; color: grey">W PRZESZŁOŚCI <span style="color: red">' . $this->past_lotteries_duplicate_counter . ' RAZ(Y)</span> ZDARZYŁO SIĘ, ŻE WYLOSOWANO TE SAME LICZBY<br />WEDŁUG DANYCH ZE WSZYSTKICH PRZESZŁYCH LOSOWAŃ SZANSA NA KOLEJNE TAKIE ZADARZENIE WYNOSI: <span style="color: red">' . round(percentage($this->past_lotteries_duplicate_counter, count($this->past_lotteries->getAllLotteries())), 2) . '%</span></p>';
         echo '<p class="visualize" style="font-size: 13px; color: red">PRZEWIDYWANA LICZBA LOSOWAŃ Z PRZESZŁOŚCI, KTÓRE MOŻNA BĘDZIE POMINĄĆ: ' . $this->past_lotteries_omit_counter . '</p>';
         echo '</div>';
     }
     private function remove($all_combinations)
     {
-        $this->past_lotteries->removeColumnGlobally('lottery_id');
-        $this->past_lotteries->removeColumnGlobally('lottery_date');
         $removed_counter = 0;
         foreach ($this->past_lotteries->getAllLotteries() as $lottery) {
             foreach ($all_combinations->getAllCombinations() as $index => $combination) {
                 if ($lottery == $combination) {
-                    $all_combinations->removeCombinationById($index);
+                    $all_combinations->removeCombinationByIndex($index);
                     $removed_counter++;
                     break;
                 }

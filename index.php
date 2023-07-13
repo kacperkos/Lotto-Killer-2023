@@ -37,7 +37,7 @@ $all_combinations = AllCombinations::getInstance();
 
 //Header
 echo '<p>Lotto-Killer | version: pre-alpha</p>';
-echo '<p>GRA: ' . $all_combinations->getK() . ' z ' . $all_combinations->getNumberOfElements() . ' liczb</p>';
+echo '<p>GRA: ' . $all_combinations->getK() . ' z ' . $all_combinations->getCountOfNumbers() . ' liczb</p>';
 
 //Wyświetlanie aktualnego prawdopodobieństwa na wygraną
 echo '<p>';
@@ -47,25 +47,25 @@ echo '</p>';
 //REGUŁA #1 (+objaśnienia)
 //Sposób usuwania z obiektu AllCombinations kombinacji według przyjętej reguły
 //Tworzenie obiektu reguły
-$rule = new SumOfPastElements();
+$rule_1 = new SumOfPastElements();
 //Sposób działania reguły można najpierw zwizualizować!
-$rule->visualize();
-//$all_combinations->removeCombinationsByRule($rule);
+$rule_1->visualize();
+//$all_combinations->removeCombinationsByRule($rule_1);
 //Wywołanie poprzez echo spowoduje wyświetlenie komunikatu zwrotnego
 echo '<p>';
-echo $all_combinations->removeCombinationsByRule($rule);
-unset($rule);
+echo $all_combinations->removeCombinationsByRule($rule_1);
+unset($rule_1);
 echo '</p>';
 echo '<p>';
 echo $all_combinations->getCurrentChances();
 echo '</p>';
 
 //REGUŁA #2
-$rule = new OmitPastLotteries();
-$rule->visualize();
+$rule_2 = new OmitPastLotteries();
+$rule_2->visualize();
 echo '<p>';
-echo $all_combinations->removeCombinationsByRule($rule);
-unset($rule);
+echo $all_combinations->removeCombinationsByRule($rule_2);
+unset($rule_2);
 echo '</p>';
 echo '<p>';
 echo $all_combinations->getCurrentChances();

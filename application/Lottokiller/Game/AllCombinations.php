@@ -29,7 +29,6 @@ class AllCombinations
         if(!empty($args) && is_array($args[0]) && is_int($args[1])) {
             $this->numbers = $args[0];
             $this->k = $args[1];
-            var_dump($args);
         }
         $this->generate($this->numbers, $this->k, [], 0, $this->all_combinations);
     }
@@ -49,12 +48,43 @@ class AllCombinations
     {
         var_dump($this->all_combinations);
     }
+    //
+    // METODY 'GET'
+    //
     public function getAllCombinations()
     {
+        //Metoda zwraca wszystkie kombinacje (poza tymi już usuniętymi
+        //po zastosowaniu wybranych reguł)
         return $this->all_combinations;
     }
+    public function getK()
+    {
+        //Metoda zwraca ilość liczb w pojedyńczej kombinacji
+        return $this->k;
+    }
+    public function getCountOfNumbers()
+    {
+        //Metoda zwraca ilość wszystkich liczb, z jakich może powstać kombinacja (pula)
+        return count($this->numbers);
+    }
+    public function getNumbers()
+    {
+        //Metoda zwraca pulę liczb, z jakich może powstać kombinacja
+        return $this->numbers;
+    }
+    public function getCurrentChances()
+    {
+        //Metoda zwraca bieżące szanse na wygraną
+        return 'Bieżące szanse na wygraną: 1 do ' . count($this->all_combinations);
+    }
+    //
+    // METODY 'REMOVE'
+    //
     public function removeCombination(array $to_remove)
     {
+        //Metoda usuwa konkretną kombinację z puli wszystkich kombinacji;
+        //parameterem wejściowym jest tablica, której pierwsze k-elementów to liczby
+        //kombinacji, która ma zostać usunięta z puli (nie muszą być posortowane)
         $new_array = [];
         $new_array_index = 0;
         for ($i = 0; $i < $this->k; $i++) {
@@ -68,32 +98,21 @@ class AllCombinations
                 && $this->all_combinations[$i] == $new_array
             ) {
                 unset($this->all_combinations[$i]);
+                return true;
             }
-        }   
+        }
+        return false;
     }
-    public function removeCombinationById($id)
+    public function removeCombinationByIndex($index)
     {
-        unset($this->all_combinations[$id]);
+        //Metoda usuwa kombinacje/wiersz o zadanym index'ie
+        unset($this->all_combinations[$index]);
     }
     public function removeCombinationsByRule($rule)
     {
+        //Metoda usuwająca te kombinacje z puli wszystkich kombinacji,
+        //które zostaną wykluczone przez wstrzykniętą regułę (rule)
         $result_msg = $rule->apply($this);
         return $result_msg;
     }
-    public function getK()
-    {
-        return $this->k;
-    }
-    public function getNumberOfElements()
-    {
-        return count($this->numbers);
-    }
-    public function getNumbers()
-    {
-        return $this->numbers;
-    }
-    public function getCurrentChances()
-    {
-        return 'Bieżące szanse na wygraną: 1 do ' . count($this->all_combinations);
-    }    
 }

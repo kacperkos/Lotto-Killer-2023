@@ -4,7 +4,7 @@ namespace Lottokiller\Game;
 
 class PastLotteries
 {
-    const CSV_FILE_NAME = 'minilotto6255.csv';
+    const CSV_FILE_NAME = 'minilotto6282.csv';
     private $past_lotteries = [];
     private $k;
 
@@ -41,8 +41,12 @@ class PastLotteries
     {
         var_dump($this->past_lotteries);
     }
+    //
+    // METODY 'GET'
+    //
     public function getLotteryById($id)
     {
+        //Metoda zwraca przeszłą loterię o zadanym ID loterii
         foreach ($this->past_lotteries as $lottery) {
             if ($lottery['lottery_id'] === $id) {
                 return $lottery;
@@ -51,27 +55,42 @@ class PastLotteries
     }
     public function getLotteryByIndex($index)
     {
+        //Metoda zwraca przeszłą loterię o zadanym index'ie
         if (isset($this->past_lotteries[$index])) {
             return $this->past_lotteries[$index];
         }
     }
     public function getAllLotteries()
     {
+        //Metoda zwraca wszystkie przeszłe loterie (poza tymi już usuniętymi
+        //po zastosowaniu konkretnych reguł)
         return $this->past_lotteries;
     }
-    public function getNumberOfElementsInLottery()
+    public function getK()
     {
+        //Metoda zwraca ilość liczb w pojedyńczym przeszłym losowaniu
         return $this->k;
     }
+    //
+    // METODY 'ADD'
+    //
     public function addNewColumnToRow($row_index, $column_name, $column_value)
     {
+        //Metoda dodaje nową kolumnę do każdego wiersza w tablicy
+        //przechowującej przeszłe losowania
         $this->past_lotteries[$row_index][$column_name] = $column_value;
     }
+    //
+    // METODY 'REMOVE'
+    //
     public function removeLotteryByIndex($index)
     {
+        //Metoda usuwa losowanie/wiersz o zadanym index'ie
         unset($this->past_lotteries[$index]);
     }
-    public function removeColumnGlobally(string $column_name) {
+    public function removeColumnGlobally(string $column_name)
+    {
+        //Metoda usuwa kolumnę z tablicy przechowującej przeszłe losowania
         foreach ($this->past_lotteries as $index => $lottery) {
             if (isset($lottery[$column_name])) {
                 unset($this->past_lotteries[$index][$column_name]);
