@@ -75,7 +75,7 @@ class AllCombinations
     public function getCurrentChances()
     {
         //Metoda zwraca bieżące szanse na wygraną
-        return 'Bieżące szanse na wygraną: 1 do ' . count($this->all_combinations);
+        return '<p>Bieżące szanse na wygraną: 1 do ' . count($this->all_combinations) . '</p>';
     }
     //
     // METODY 'REMOVE'

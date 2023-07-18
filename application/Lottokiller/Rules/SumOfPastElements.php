@@ -52,9 +52,9 @@ class SumOfPastElements implements RuleInterface
             $result = $this->remove($all_combinations);
         }
         if ($result === 0) {
-            $result_msg = 'Nic nie usunięto z użyciem reguły "' . $this->getName() . '".';
+            $result_msg = '<p>Nic nie usunięto z użyciem reguły "' . $this->getName() . '".</p>';
         } else {
-            $result_msg = 'Użycie reguły "' . $this->getName() . '" spowodowało usunięcie ' . $result . ' kombinacji.';
+            $result_msg = '<p>Użycie reguły "' . $this->getName() . '" spowodowało usunięcie ' . $result . ' kombinacji.</p>';
         }
         return $result_msg;
     }
@@ -83,6 +83,12 @@ class SumOfPastElements implements RuleInterface
     //
     // METODY NADMIAROWE WZGLĘDEM INTERFEJSU
     //
+    public function setStep()
+    {
+    }
+    public function setImportance()
+    {
+    }
     private function sumAndAnalyzeElements()
     {
         //Suma liczb z każdego losowania w nowej kolumnie 'lottery_sum'

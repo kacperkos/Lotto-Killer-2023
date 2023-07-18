@@ -15,7 +15,7 @@ use Lottokiller\Interfaces\RuleInterface;
 class OmitPastLotteries implements RuleInterface
 {
     private $name = 'Pomiń kombinacje z przeszłości';
-    private $description = 'Ta reguła wyklucza z wszystkich możliwych kombinacji te z nich, które były już wylosowane w przeszłości';
+    private $description = 'Ta reguła wyklucza ze wszystkich możliwych kombinacji te z nich, które były już wylosowane w przeszłości';
     private $past_lotteries;
     private $past_lotteries_omit_counter = 0;
     private $past_lotteries_duplicate_counter = 0;
@@ -37,9 +37,9 @@ class OmitPastLotteries implements RuleInterface
             $result = $this->remove($all_combinations);
         }
         if ($result === 0) {
-            $result_msg = 'Nic nie usunięto z użyciem reguły "' . $this->getName() . '".';
+            $result_msg = '<p>Nic nie usunięto z użyciem reguły "' . $this->getName() . '".</p>';
         } else {
-            $result_msg = 'Użycie reguły "' . $this->getName() . '" spowodowało usunięcie ' . $result . ' kombinacji.';
+            $result_msg = '<p>Użycie reguły "' . $this->getName() . '" spowodowało usunięcie ' . $result . ' kombinacji.</p>';
         }
         return $result_msg;
     }
