@@ -4,7 +4,7 @@ namespace Lottokiller\Game;
 
 class PastLotteries
 {
-    const CSV_FILE_NAME = 'minilotto6282.csv';
+    const CSV_FILE_NAME = 'minilotto6329.csv';
     private $past_lotteries = [];
     private $k;
 
@@ -41,6 +41,9 @@ class PastLotteries
     {
         var_dump($this->past_lotteries);
     }
+    //
+    // METODY 'IF'
+    //
     //
     // METODY 'GET'
     //

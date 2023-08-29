@@ -49,6 +49,16 @@ class AllCombinations
         var_dump($this->all_combinations);
     }
     //
+    // METODY 'IF'
+    //
+    public function ifExistsByIndex($index) {
+        if (isset($this->all_combinations[$index])) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    //
     // METODY 'GET'
     //
     public function getAllCombinations()

@@ -27,10 +27,11 @@ class OmitInrowElements implements RuleInterface
     private $name = 'Pomiń kombinacje z liczbami w rzędzie';
     private $description = 'Ta reguła wyklucza ze wszystkich możliwych kombinacji te z nich, które zawierają liczby w n-elementowych rzędach';
     private $past_lotteries;
-    private $past_lotteries_inrow_chance;
+    private $past_lotteries_inrow_chance = [];
     private $all_combinations;
     private $all_combinations_inrows_indexes = [];
-    //CONFIG: Kombinacje z iloma liczbami w rzędzie mają zostać pominięte?
+    //CONFIG: N określa minimalną/dolną ilość elementów w rzędzie, który
+    //zakwalifikuje kombinację z obiektu AllCombinations do usunięcia.
     private $n = 2;
     //CONFIG: Jaki jest próg ważności, według której n-elementowy rząd zostanie
     //zakwalifikowany do pominięcia?
@@ -83,7 +84,7 @@ class OmitInrowElements implements RuleInterface
     //
     // METODY NADMIAROWE WZGLĘDEM INTERFEJSU
     //
-    public function setN (int $n)
+    public function setMinimumN (int $n)
     {
         if (
             $n < 2
@@ -108,39 +109,39 @@ class OmitInrowElements implements RuleInterface
     private function analyzePastLotteriesAndCollectInrowsIndexes()
     {
         //Analiza obiektu PastLotteries, w celu zbadania prawdopodobieństwa
-        //wystąpienia n-elementowego rzędu liczb w kombinacji
-        $past_lotteries_inrows_counter = 0;
-        foreach ($this->past_lotteries->getAllLotteries() as $lottery) {
-            if ($this->inrowCheck($lottery)) {
-                $past_lotteries_inrows_counter++;
+        //wystąpienia n-elementowych rzędów liczb w kombinacjach
+        for ($n = $this->n; $n<=$this->past_lotteries->getK(); $n++) {
+            $past_lotteries_inrows_counter = 0;
+            foreach ($this->past_lotteries->getAllLotteries() as $lottery) {
+                if ($this->inrowCheck($n, $lottery)) {
+                    $past_lotteries_inrows_counter++;
+                }
             }
+            $this->past_lotteries_inrow_chance[$n] = percentage($past_lotteries_inrows_counter, count($this->past_lotteries->getAllLotteries()));
         }
-        $this->past_lotteries_inrow_chance = percentage($past_lotteries_inrows_counter, count($this->past_lotteries->getAllLotteries()));
-        //Jeżeli prawdopodobieństwo wystąpienia n-elementowych rzędów
-        //jest mniejsze od zadanego progu ważności, to znajdź index'y wszystkich
-        //takich n-elementowych rzędów w obiekcie AllCombinations
-        if ($this->past_lotteries_inrow_chance < $this->importance) {
+        //Znajdź index'y wszystkich n-elementowych rzędów w AllCombinations
+        for ($n = $this->n; $n<=$this->all_combinations->getK(); $n++) {
             foreach ($this->all_combinations->getAllCombinations() as $index => $combination) {
-                if ($this->inrowCheck($combination)) {
-                    $this->all_combinations_inrows_indexes[] = $index;
+                if ($this->inrowCheck($n, $combination)) {
+                    $this->all_combinations_inrows_indexes[$n][] = $index;
                 }
             }
         }
     }
-    private function inrowCheck(array $lottery)
+    private function inrowCheck(int $n, array $lottery)
     {
         $inrow_lenght = 1;
         for ($i = 0; $i < $this->past_lotteries->getK()-1; $i++) {
             if ($lottery[$i] == $lottery[$i+1]-1) {
                 $inrow_lenght++;
-            } elseif ($inrow_lenght == $this->n) {
+            } elseif ($inrow_lenght == $n) {
                 return true;
             } else {
                 $inrow_lenght = 1;
             }
             if (
                 $i == $this->past_lotteries->getK()-2
-                && $inrow_lenght == $this->n
+                && $inrow_lenght == $n
             ) {
                 return true;
             }
@@ -149,10 +150,34 @@ class OmitInrowElements implements RuleInterface
     }
     private function drawStats()
     {
-        
+        echo '<div class="visualizeBox">';
+        echo '<p class="visualize">WIZUALIZACJA REGUŁY:<br/>&nbsp;&nbsp;&nbsp;&nbsp;<u>"' . $this->getName() . '"</u></p>';
+        echo '<p class="visualize">OPIS REGUŁY:<br/ >&nbsp;&nbsp;&nbsp;&nbsp;' . $this->getDescription() . '</p>';
+        echo '<p class="visualize">KONIGURACJA:<br />&nbsp;&nbsp;&nbsp;&nbsp;MINIMALNA DŁUGOŚĆ RZĘDU: <span style="color: red;">' . $this->n . '</span><br />&nbsp;&nbsp;&nbsp;&nbsp;PRÓG WAŻNOŚCI/POMINIĘCIA: <span style="color: red;">' . round($this->importance, 2) . '%</span></p>';
+        for ($n = $this->n; $n<=$this->all_combinations->getK(); $n++) {
+            echo '<p class="visualize" style="font-size: 13px; color: grey;">ILOŚĆ KOMBINACJI Z <span style="color: red;">' . $n . '</span>-ELEMENTOWYMI RZĘDAMI: <span style="color: red;">' . count($this->all_combinations_inrows_indexes[$n]) . '</span><br />SZACOWANE PRAWDOPODOBIEŃSTWO WYSTĄPIENIA KOMBINACJI Z TAKIMI RZĘDAMI W PRZYSZŁOŚCI: <span style="color: red;">' . round($this->past_lotteries_inrow_chance[$n], 2) . '%</span><br />';
+            if ($this->past_lotteries_inrow_chance[$n] < $this->importance) {
+                echo '<span style="color: red;">[ZAKWALIFIKOWANO DO USUNIĘCIA]</span></p>';
+            } else {
+                echo '<span style="color: grey;">[NIE ZAKWALIFIKOWANO DO USUNIĘCIA]</span></p>';
+            }
+        }
+        echo '<p class="visualize" style="font-size: 13px; color: red;">UWAGA:<br /><span style="color: grey;">SUMARYCZNA ILOŚĆ USUNIĘTYCH KOMBINACJI MOŻE BYĆ MNIEJSZA, PONIEWAŻ NIEKTÓRE Z KOMBINACJI ZAWIERAJĄ WIĘCEJ NIŻ 1 N-ELEMENROWYCH RZĘDÓW,<br />NP. KOMBINACJA LICZB [2, 3, 39, 40, 41] ZAWIERA ZARÓWNO RZĄD 2-ELEMENTOWY JAK I 3-ELEMENTOWY;<br />KAŻDY Z TYCH RZĘDÓW ZOSTAŁ DODANY DO POWYŻSZYCH SUM OSOBNO, MIMO ŻE ZNAJDUJĄ SIĘ ONE W TEJ SAMEJ KOMBINACJI</span></p>';
+        echo '</div>';
     }
-    private function remove()
+    private function remove($all_combinations)
     {
-        
+        $removed_counter = 0;
+        for ($n = $this->n; $n<=$this->past_lotteries->getK(); $n++) {
+            if ($this->past_lotteries_inrow_chance[$n] < $this->importance) {
+                foreach ($this->all_combinations_inrows_indexes[$n] as $index) {
+                    if ($all_combinations->ifExistsByIndex($index)) {
+                        $all_combinations->removeCombinationByIndex($index);
+                        $removed_counter++;
+                    }
+                }
+            }
+        }
+        return $removed_counter;
     }
 }

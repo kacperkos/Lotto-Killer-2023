@@ -43,7 +43,7 @@ echo '<p>GRA: ' . $all_combinations->getK() . ' z ' . $all_combinations->getCoun
 //Wyświetlanie aktualnego prawdopodobieństwa na wygraną
 echo $all_combinations->getCurrentChances();
 
-/*
+
 //REGUŁA #1 (+objaśnienia)
 //Sposób usuwania z obiektu AllCombinations kombinacji według przyjętej reguły
 //Tworzenie obiektu reguły
@@ -55,23 +55,25 @@ $rule_1->visualize();
 echo $all_combinations->removeCombinationsByRule($rule_1);
 unset($rule_1);
 echo $all_combinations->getCurrentChances();
-*/
 
-/*
+
+
 //REGUŁA #2
 $rule_2 = new OmitPastLotteries();
 $rule_2->visualize();
 echo $all_combinations->removeCombinationsByRule($rule_2);
 unset($rule_2);
 echo $all_combinations->getCurrentChances();
-*/
+
 
 //REGUŁA #3
 $rule_3 = new OmitInrowElements();
-$rule_3->setN(3);
-$rule_3->setImportance(5);
+$rule_3->setMinimumN(2);
+$rule_3->setImportance(4);
 $rule_3->visualize();
-
+echo $all_combinations->removeCombinationsByRule($rule_3);
+unset($rule_3);
+echo $all_combinations->getCurrentChances();
 ?>
     </body>
 </html>
