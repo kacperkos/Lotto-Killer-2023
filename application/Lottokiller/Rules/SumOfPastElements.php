@@ -28,9 +28,9 @@ class SumOfPastElements implements RuleInterface
     private $past_lotteries;
     private $past_lotteries_sum_ranges;
     //CONFIG: Co ile ma być tworzony nowy przedział w tablicy analitycznej?
-    private int $step = 5;
+    private int $step = 4;
     //CONFIG: Jaki jest próg ważności przedziału w tablicy analitycznej?
-    private int $importance = 2; //%
+    private int $importance = 1; //%
     
     public function __construct()
     {
@@ -83,11 +83,27 @@ class SumOfPastElements implements RuleInterface
     //
     // METODY NADMIAROWE WZGLĘDEM INTERFEJSU
     //
-    public function setStep()
+    public function setStep(int $step)
     {
+        if (
+            $step < 1
+            || $step > 10    
+        ) {
+            echo '<p>W regule "' . $this->getName() . '" nie można ustawić <b>kroku tabeli sum</b> na <b>' . $step . '</b> (musi być z przedziału <b>1 - 10</b>)</p>';
+        } else {
+            $this->step = $step;
+        }
     }
-    public function setImportance()
+    public function setImportance (int $importance)
     {
+        if (
+            $importance < 1
+            || $importance > 100
+        ) {
+            echo '<p>W regule "' . $this->getName() . '" nie można ustawić <b>progu ważności przedziału sum</b> na <b>' . $importance . '%</b> (musi być z przedziału <b>1 - 100</b>)</p>';
+        } else {
+            $this->importance = $importance;
+        }
     }
     private function sumAndAnalyzeElements()
     {
@@ -154,7 +170,7 @@ class SumOfPastElements implements RuleInterface
         echo '<div class="visualizeBox">';
         echo '<p class="visualize">WIZUALIZACJA REGUŁY:<br/>&nbsp;&nbsp;&nbsp;&nbsp;<u>"' . $this->getName() . '"</u></p>';
         echo '<p class="visualize">OPIS REGUŁY:<br/ >&nbsp;&nbsp;&nbsp;&nbsp;' . $this->getDescription() . '</p>';
-        echo '<p class="visualize">KONIGURACJA:<br />&nbsp;&nbsp;&nbsp;&nbsp;POZIOM WAŻNOŚCI PRZEDZIAŁU: <span style="color: red;">' . $this->importance . '%</span><br /></p>';
+        echo '<p class="visualize">KONIGURACJA:<br />&nbsp;&nbsp;&nbsp;&nbsp;KROK TABELI SUM: <span style="color: red;">' . $this->step . '</span><br />&nbsp;&nbsp;&nbsp;&nbsp;PRÓG WAŻNOŚCI PRZEDZIAŁU SUM: <span style="color: red;">' . $this->importance . '%</span><br /></p>';
         echo '<p class="visualize">LEGENDA: <br/ >&nbsp;&nbsp;&nbsp;&nbsp;[minimalna wartość przedziału - maksymalna wartość przedziału] | &bull;&bull;&bull; procentowy udział przedziału we wszystkich dotychczasowych losowaniach<br /><br /></p>';
         foreach ($this->past_lotteries_sum_ranges as $draw_row) {
             echo '<p class="visualize" style="line-height: 7px; font-size: 13px">';

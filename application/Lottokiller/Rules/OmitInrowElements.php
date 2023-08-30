@@ -45,7 +45,6 @@ class OmitInrowElements implements RuleInterface
     public function __destruct()
     {
         unset($this->past_lotteries);
-        unset($this->all_combinations);
     }
     public function apply($all_combinations)
     {
@@ -110,7 +109,7 @@ class OmitInrowElements implements RuleInterface
     {
         //Analiza obiektu PastLotteries, w celu zbadania prawdopodobieństwa
         //wystąpienia n-elementowych rzędów liczb w kombinacjach
-        for ($n = $this->n; $n<=$this->past_lotteries->getK(); $n++) {
+        for ($n = $this->n; $n <= $this->past_lotteries->getK(); $n++) {
             $past_lotteries_inrows_counter = 0;
             foreach ($this->past_lotteries->getAllLotteries() as $lottery) {
                 if ($this->inrowCheck($n, $lottery)) {
@@ -120,7 +119,7 @@ class OmitInrowElements implements RuleInterface
             $this->past_lotteries_inrow_chance[$n] = percentage($past_lotteries_inrows_counter, count($this->past_lotteries->getAllLotteries()));
         }
         //Znajdź index'y wszystkich n-elementowych rzędów w AllCombinations
-        for ($n = $this->n; $n<=$this->all_combinations->getK(); $n++) {
+        for ($n = $this->n; $n <= $this->all_combinations->getK(); $n++) {
             foreach ($this->all_combinations->getAllCombinations() as $index => $combination) {
                 if ($this->inrowCheck($n, $combination)) {
                     $this->all_combinations_inrows_indexes[$n][] = $index;
@@ -154,7 +153,7 @@ class OmitInrowElements implements RuleInterface
         echo '<p class="visualize">WIZUALIZACJA REGUŁY:<br/>&nbsp;&nbsp;&nbsp;&nbsp;<u>"' . $this->getName() . '"</u></p>';
         echo '<p class="visualize">OPIS REGUŁY:<br/ >&nbsp;&nbsp;&nbsp;&nbsp;' . $this->getDescription() . '</p>';
         echo '<p class="visualize">KONIGURACJA:<br />&nbsp;&nbsp;&nbsp;&nbsp;MINIMALNA DŁUGOŚĆ RZĘDU: <span style="color: red;">' . $this->n . '</span><br />&nbsp;&nbsp;&nbsp;&nbsp;PRÓG WAŻNOŚCI/POMINIĘCIA: <span style="color: red;">' . round($this->importance, 2) . '%</span></p>';
-        for ($n = $this->n; $n<=$this->all_combinations->getK(); $n++) {
+        for ($n = $this->n; $n <= $this->all_combinations->getK(); $n++) {
             echo '<p class="visualize" style="font-size: 13px; color: grey;">ILOŚĆ KOMBINACJI Z <span style="color: red;">' . $n . '</span>-ELEMENTOWYMI RZĘDAMI: <span style="color: red;">' . count($this->all_combinations_inrows_indexes[$n]) . '</span><br />SZACOWANE PRAWDOPODOBIEŃSTWO WYSTĄPIENIA KOMBINACJI Z TAKIMI RZĘDAMI W PRZYSZŁOŚCI: <span style="color: red;">' . round($this->past_lotteries_inrow_chance[$n], 2) . '%</span><br />';
             if ($this->past_lotteries_inrow_chance[$n] < $this->importance) {
                 echo '<span style="color: red;">[ZAKWALIFIKOWANO DO USUNIĘCIA]</span></p>';
@@ -168,7 +167,7 @@ class OmitInrowElements implements RuleInterface
     private function remove($all_combinations)
     {
         $removed_counter = 0;
-        for ($n = $this->n; $n<=$this->past_lotteries->getK(); $n++) {
+        for ($n = $this->n; $n <= $this->past_lotteries->getK(); $n++) {
             if ($this->past_lotteries_inrow_chance[$n] < $this->importance) {
                 foreach ($this->all_combinations_inrows_indexes[$n] as $index) {
                     if ($all_combinations->ifExistsByIndex($index)) {
