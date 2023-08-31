@@ -22,17 +22,8 @@ use Lottokiller\Rules\OmitEvenOddElements;
 //Sposoby inicjowania zbioru wszystkich możliwych kombinacji
 //Obiekt AllCombinations to Singleton!
 $all_combinations = AllCombinations::getInstance();
-//$all_combinations = AllCombinations::getInstance([1,2,3,4,5], 3);
-
-//Sposób usuwania dowolnych kombinacji z obiektu AllCombinations
-//$all_combinations->removeCombination([1,2,3,4,5]);
-
-//Sposoby usuwania z obiektu AllCombnations kombinacji, które już kiedyś padły
-//Konieczne jest stworzenie obiektu PastLotteries! który wczyta plik źródłowy
-//$past_lotteries = new PastLotteries();
-//$all_combinations->removeCombination($past_lotteries->getLotteryByIndex(0));
-//$all_combinations->removeCombination($past_lotteries->getLotteryById(13));
-//echo $all_combinations->getCurrentChances();
+//$all_combinations = AllCombinations::getInstance('abc.txt');
+//$all_combinations = AllCombinations::getInstance([2,4,6,8,10,12,14], 4);
 
 //Wyświetlanie aktualnego stanu obiektu AllCombinations
 //$all_combinations->dump();
@@ -90,6 +81,8 @@ echo $all_combinations->removeCombinationsByRule($rule_4);
 unset($rule_3);
 echo $all_combinations->getCurrentChances();
 */
+
+//$all_combinations->ifExistsByNumbers([1,2,3,4,5], true);
 
 unset($all_combinations);
 ?>

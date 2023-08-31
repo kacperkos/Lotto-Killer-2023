@@ -130,8 +130,8 @@ class OmitInrowElements implements RuleInterface
     private function inrowCheck(int $n, array $lottery)
     {
         $inrow_lenght = 1;
-        for ($i = 0; $i < $this->past_lotteries->getK()-1; $i++) {
-            if ($lottery[$i] == $lottery[$i+1]-1) {
+        for ($i = 0; $i < $this->past_lotteries->getK() - 1; $i++) {
+            if ($lottery[$i] == $lottery[$i + 1] - 1) {
                 $inrow_lenght++;
             } elseif ($inrow_lenght == $n) {
                 return true;
@@ -139,7 +139,7 @@ class OmitInrowElements implements RuleInterface
                 $inrow_lenght = 1;
             }
             if (
-                $i == $this->past_lotteries->getK()-2
+                $i == $this->past_lotteries->getK() - 2
                 && $inrow_lenght == $n
             ) {
                 return true;

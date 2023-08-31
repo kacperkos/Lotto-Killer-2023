@@ -26,9 +26,22 @@ class AllCombinations
         //Aby wygenerować inne kombinacje, podaj 2 parametry:
         //#1: tablica wszystkich liczb
         //#2: liczba elementów
-        if(!empty($args) && is_array($args[0]) && is_int($args[1])) {
+        if (
+            !empty($args)
+            && is_array($args[0])
+            && is_int($args[1])
+        ) {
             $this->numbers = $args[0];
             $this->k = $args[1];
+            echo '<p>JUPI</p>';
+        }
+        //OPCJA: zamiast generować kombinacje, można załadować wstępnie
+        //przetworzone kombinacje z pliku; aby to zrobić, należy podać jego nazwę.
+        if (
+            !empty($args)
+            && is_string($args[0])
+        ) {
+            //Obsługa pliku wsadowego...
         }
         $this->generate($this->numbers, $this->k, [], 0, $this->all_combinations);
     }
@@ -57,6 +70,41 @@ class AllCombinations
         } else {
             return false;
         }
+    }
+    public function ifExistsByNumbers(array $numbers, bool $echoo = false) {
+        //Metoda sprawdza, czy w pozostałej puli kombinacji obiektu AllCombinations
+        //znajduje się zadana kombinacja liczb.
+        //Parametry:
+        //$array: tablica liczb
+        //$echoo: jeżeli "true", to metoda będzie wyświetlała komunikaty
+        $numbers_string = '';
+        $i = 0;
+        sort($numbers);
+        foreach ($numbers as $number) {
+            $numbers_string .= $number;
+            if ($i != count($numbers) - 1) {
+                $numbers_string .= ',';
+            }
+            $i++;
+        }
+        if (count($numbers) != $this->getK()) {
+            if ($echoo) {
+                echo '<p>[' . $numbers_string . ']: brak</p>';
+            }
+            return false;
+        }
+        foreach ($this->getAllCombinations() as $combination) {
+            if ($combination == $numbers) {
+                if ($echoo) {
+                    echo '<p>[' . $numbers_string . ']: JEST!</p>';
+                }
+                return true;
+            }
+        }
+        if ($echoo) {
+            echo '<p>[' . $numbers_string . ']: brak</p>';
+        }
+        return false;
     }
     //
     // METODY 'GET'
