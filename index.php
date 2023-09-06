@@ -3,11 +3,12 @@
 require 'vendor/autoload.php';
 
 use Lottokiller\Game\AllCombinations;
-//use Lottokiller\Game\PastLotteries;
+use Lottokiller\Game\PastLotteries;
 use Lottokiller\Rules\SumOfPastElements;
 use Lottokiller\Rules\OmitPastLotteries;
 use Lottokiller\Rules\OmitInrowElements;
 use Lottokiller\Rules\OmitEvenOddElements;
+use Lottokiller\Selectors\LuckOfTheIrish;
 
 ?>
 <html>
@@ -83,9 +84,33 @@ echo $all_combinations->getCurrentChances();
 */
 
 //$all_combinations->cacheCombinations();
-//$all_combinations->ifExistsByNumbers([1,2,3,4,5], true);
+
+/*
+//Liczby z kuponów
+//16.08.23
+$all_combinations->ifExistsByNumbers([12,18,19,26,35], true);
+$all_combinations->ifExistsByNumbers([9,12,28,34,36], true);
+$all_combinations->ifExistsByNumbers([1,7,10,20,36], true);
+$all_combinations->ifExistsByNumbers([7,14,21,23,33], true);
+//06.07.23
+$all_combinations->ifExistsByNumbers([5,23,30,36,41], true);
+$all_combinations->ifExistsByNumbers([3,6,12,27,35], true);
+$all_combinations->ifExistsByNumbers([10,12,16,32,41], true);
+$all_combinations->ifExistsByNumbers([2,8,29,30,33], true);
+//27.06.23
+$all_combinations->ifExistsByNumbers([13,14,15,20,37], true);
+$all_combinations->ifExistsByNumbers([6,18,30,32,38], true);
+$all_combinations->ifExistsByNumbers([14,23,29,33,41], true);
+$all_combinations->ifExistsByNumbers([7,18,38,40,42], true);
+*/
+
+$past_lotteries = new PastLotteries();
+
+$selector_1 = new LuckOfTheIrish($all_combinations, $past_lotteries);
+$selector_1->run();
 
 unset($all_combinations);
+unset($past_combinations);
 ?>
     </body>
 </html>
