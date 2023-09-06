@@ -40,12 +40,14 @@ class AllCombinations
         if (
             !empty($args)
             && is_string($args[0])
+            && $args[0] == 'loadFromCache'
         ) {
-            //Obsługa pliku wsadowego...
+            $this->loadCombinationsFromCache();
+        } else {
+            $this->generateAllCombinations($this->numbers, $this->k, [], 0, $this->all_combinations);
         }
-        $this->generate($this->numbers, $this->k, [], 0, $this->all_combinations);
     }
-    private function generate($numbers, $k, $comb, $start, &$result)
+    private function generateAllCombinations($numbers, $k, $comb, $start, &$result)
     {
         if ($k === 0) {
             $result[] = $comb;
@@ -60,6 +62,64 @@ class AllCombinations
     public function dump()
     {
         var_dump($this->all_combinations);
+    }
+    public function cacheCombinations()
+    {
+        $file_name = date('YmdHis') . '.csv';
+        $file = fopen('cache/' . $file_name, 'w');
+        if ($file === false) {
+            echo '<p>Wstrzymano zapis; nie można utworzyć pliku ' . $file_name . '</p>';
+        } else {
+            foreach ($this->getAllCombinations() as $index => $combination) {
+                $row = '';
+                $row .= $index . ',';
+                $element_counter = 0;
+                foreach ($combination as $element) {
+                    $row .= $element;
+                    if ($element_counter < $this->getK() - 1) {
+                        $row .= ' ';
+                    } else {
+                        $row .= "\n";
+                    }
+                    $element_counter++;
+                }
+                fputs($file, $row);
+            }            
+            fclose($file);
+            echo '<p>Pozostała pula kombinacji została zapisana w pliku ' . $file_name. '</p>';
+        }
+    }
+    private function loadCombinationsFromCache()
+    {
+        $directory = 'cache/';
+        if (is_dir($directory)) {
+            $files = scandir($directory);
+            $files = array_diff($files, array('.', '..'));
+            if (count($files) > 0) {
+                arsort($files);
+                $newest_file = reset($files);
+                $file_string = file_get_contents('cache/' . $newest_file);
+                if ($file_string !== false) {
+                    $file_string_exploded = explode("\n", $file_string);
+                    foreach ($file_string_exploded as $index => $row) {
+                        if(!empty($row)) {
+                            $row_exploded = explode(",", $row);
+                            //$row_exploded[0] -> //index kombinacji
+                            //$row_exploded[1] -> //liczby
+                            $numbers_exploded = explode(" ", $row_exploded[1]);
+                            foreach ($numbers_exploded as $index => &$number) {
+                                $number = intval($number);
+                            }
+                            $this->all_combinations[$row_exploded[0]] = $numbers_exploded;
+                        }
+                    }
+                }
+            } else {
+                echo '<p>Nie można załadować kombinacji; katalog "cache/" jest pusty...</p>';
+            }
+        } else {
+            echo '<p>Nie można załadować kombinacji; katalog "cache/" nie istnieje...</p>';
+        }
     }
     //
     // METODY 'IF'

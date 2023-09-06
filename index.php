@@ -21,9 +21,9 @@ use Lottokiller\Rules\OmitEvenOddElements;
 
 //Sposoby inicjowania zbioru wszystkich możliwych kombinacji
 //Obiekt AllCombinations to Singleton!
-$all_combinations = AllCombinations::getInstance();
-//$all_combinations = AllCombinations::getInstance('abc.txt');
+//$all_combinations = AllCombinations::getInstance();
 //$all_combinations = AllCombinations::getInstance([2,4,6,8,10,12,14], 4);
+$all_combinations = AllCombinations::getInstance('loadFromCache');
 
 //Wyświetlanie aktualnego stanu obiektu AllCombinations
 //$all_combinations->dump();
@@ -82,6 +82,7 @@ unset($rule_3);
 echo $all_combinations->getCurrentChances();
 */
 
+//$all_combinations->cacheCombinations();
 //$all_combinations->ifExistsByNumbers([1,2,3,4,5], true);
 
 unset($all_combinations);
