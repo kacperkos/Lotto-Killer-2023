@@ -104,13 +104,10 @@ $all_combinations->ifExistsByNumbers([14,23,29,33,41], true);
 $all_combinations->ifExistsByNumbers([7,18,38,40,42], true);
 */
 
-$past_lotteries = new PastLotteries();
-
-$selector_1 = new LuckOfTheIrish($all_combinations, $past_lotteries);
+$selector_1 = new LuckOfTheIrish();
 $selector_1->run();
 
 unset($all_combinations);
-unset($past_combinations);
 ?>
     </body>
 </html>

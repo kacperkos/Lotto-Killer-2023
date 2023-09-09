@@ -4,7 +4,7 @@ namespace Lottokiller\Interfaces;
 
 interface SelectorInterface
 {
-    public function __construct($all_combinations, $past_lotteries);
+    public function __construct();
     public function run();
     public function researchThePast();
     public function makeAchoice();
