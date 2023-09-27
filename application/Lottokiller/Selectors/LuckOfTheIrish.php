@@ -169,7 +169,22 @@ class LuckOfTheIrish implements SelectorInterface
             !$this->error
             && $this->saint_patricks_nod
         ) {
-            var_dump($this->chosen_combinations);
+            $bet_counter = 1;
+            foreach ($this->chosen_combinations as $combination) {
+                $bet_counter_txt = '';
+                sort($combination);
+                if ($bet_counter < 10) {
+                    $bet_counter_txt = '0' . $bet_counter;
+                } else {
+                    $bet_counter_txt .= $bet_counter;
+                }
+                echo '<p class="combination"><b>KUPON-' . $bet_counter_txt . '</b>&nbsp;&nbsp;&nbsp;&nbsp;';
+                foreach ($combination as $number) {
+                    echo $number . '&nbsp;&nbsp;';
+                }
+                echo '</p>';
+                $bet_counter++;
+            }
         }        
     }
     public function getName()

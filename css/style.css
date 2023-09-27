@@ -18,3 +18,14 @@ p {
 p.visualize {
     color: #ffffff;
 }
+
+p.combination {
+    font-size: 1.3em;
+    margin: 0;
+    padding: 7px;
+}
+
+p.combination:hover {
+    color: #ff0000;
+    background-color: #ffffff;
+}
